@@ -148,5 +148,4 @@ npm run demo:attack
 
 ---
 
-## 🛡️ License
-MIT License. Built for secure agentic systems.
+
