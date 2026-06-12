@@ -1,0 +1,21 @@
+{
+  "name": "@guardian-mcp/mcp-server",
+  "version": "1.0.0",
+  "description": "Vulnerable sandbox MCP server for Guardian-MCP demonstration",
+  "type": "module",
+  "main": "dist/http-server.js",
+  "scripts": {
+    "dev": "node --loader ts-node/esm src/http-server.ts",
+    "build": "tsc",
+    "start": "node dist/http-server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "fastify": "^4.27.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@guardian-mcp/attack-sim",
+  "version": "1.0.0",
+  "description": "Exploit and defense demonstration suite for Guardian-MCP",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "demo": "node --loader ts-node/esm src/run_demo.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

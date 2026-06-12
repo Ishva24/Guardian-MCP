@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  mcp-server:
+    build:
+      context: ./packages/mcp-server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+
+  guardian-proxy:
+    build:
+      context: ./packages/proxy
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - MCP_SERVER_URL=http://mcp-server:3000
+      - PROXY_PORT=8080
+    volumes:
+      - ./packages/proxy/keys:/app/keys:ro
+      - ./packages/proxy/policy.json:/app/policy.json
+    depends_on:
+      - mcp-server
+    restart: unless-stopped

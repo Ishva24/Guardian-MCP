@@ -1,0 +1,20 @@
+{
+  "name": "guardian-mcp",
+  "version": "1.0.0",
+  "description": "Zero-Trust Runtime Authorization Proxy for the Model Context Protocol",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev:server": "npm run dev --workspace=packages/mcp-server",
+    "dev:proxy": "npm run dev --workspace=packages/proxy",
+    "demo:attack": "npm run demo --workspace=packages/attack-sim",
+    "keygen": "npm run keygen --workspace=packages/proxy",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

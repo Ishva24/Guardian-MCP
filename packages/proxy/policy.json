@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "defaultAction": "deny",
+  "rules": [
+    {
+      "id": "rule-001",
+      "description": "Allow list_documents for any authenticated session with list scope",
+      "tool": "list_documents",
+      "requiredScope": "docs:list",
+      "action": "allow"
+    },
+    {
+      "id": "rule-002",
+      "description": "Allow read_document for sessions with read scope",
+      "tool": "read_document",
+      "requiredScope": "docs:read",
+      "action": "allow"
+    },
+    {
+      "id": "rule-003",
+      "description": "Block delete_document — requires elevated docs:delete scope",
+      "tool": "delete_document",
+      "requiredScope": "docs:delete",
+      "action": "allow"
+    }
+  ],
+  "argumentConstraints": [
+    {
+      "tool": "read_document",
+      "field": "filename",
+      "allowPattern": "^[a-zA-Z0-9_\\-\\.]{1,100}$",
+      "blockPattern": "\\.\\.",
+      "maxLength": 100
+    },
+    {
+      "tool": "delete_document",
+      "field": "filename",
+      "allowPattern": "^[a-zA-Z0-9_\\-\\.]{1,100}$",
+      "blockPattern": "\\.\\.",
+      "maxLength": 100
+    }
+  ]
+}
