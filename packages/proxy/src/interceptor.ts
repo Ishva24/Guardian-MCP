@@ -66,7 +66,7 @@ export async function interceptRequest(
     Object.entries(toolArgs).filter(([, v]) => typeof v === 'string')
   ) as Record<string, string>;
 
-  const semanticResult = inspectArguments(toolName, stringArgs);
+  const semanticResult = inspectArguments(toolName, toolArgs);
 
   if (semanticResult.anomaly) {
     const latencyMs = performance.now() - startTime;
