@@ -1,4 +1,4 @@
-import type { InspectionResult } from '../types.js';
+import type { AgentSessionClaims, InspectionResult } from '../types.js';
 
 // Pre-compiled for maximum performance (no runtime regex compilation per request).
 const PATTERNS = {
@@ -82,6 +82,39 @@ export function inspectArguments(
           pattern: patternName,
         };
       }
+    }
+  }
+
+  return { anomaly: false };
+}
+
+/**
+ * Enforces constraints embedded in the verified session token. This keeps a
+ * valid, correctly-scoped token constrained to the specific resources it was
+ * issued to access (attribute-based access control).
+ */
+export function applySessionConstraints(
+  _toolName: string,
+  args: Record<string, unknown>,
+  constraints?: AgentSessionClaims['constraints']
+): InspectionResult {
+  const allowedResourcePrefix = constraints?.allowedResourcePrefix;
+  if (!allowedResourcePrefix) {
+    return { anomaly: false };
+  }
+
+  for (const { path, value } of collectStringArguments(args)) {
+    if (!path.endsWith('.filename')) {
+      continue;
+    }
+
+    if (!value.startsWith(allowedResourcePrefix)) {
+      return {
+        anomaly: true,
+        severity: 'HIGH',
+        reason: `Argument "${path}" is outside this session's allowed resource prefix "${allowedResourcePrefix}"`,
+        pattern: 'SESSION_RESOURCE_PREFIX',
+      };
     }
   }
 

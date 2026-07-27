@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { inspectArguments } from '../src/semantic/inspector.js';
+import { applySessionConstraints, inspectArguments } from '../src/semantic/inspector.js';
 
 describe('Semantic Inspector', () => {
   describe('Path Traversal', () => {
@@ -122,6 +122,54 @@ describe('Semantic Inspector', () => {
 
     it('should allow short normal strings', () => {
       const result = inspectArguments('list_documents', {});
+      expect(result.anomaly).toBe(false);
+    });
+  });
+
+  describe('Session-Bound Resource Constraints', () => {
+    const constraints = { allowedResourcePrefix: 'project_alpha_' };
+
+    it('should block a filename outside the verified session resource prefix', () => {
+      const result = applySessionConstraints(
+        'read_document',
+        { filename: 'employee_handbook.txt' },
+        constraints
+      );
+
+      expect(result.anomaly).toBe(true);
+      expect(result.severity).toBe('HIGH');
+      expect(result.pattern).toBe('SESSION_RESOURCE_PREFIX');
+      expect(result.reason).toContain('arguments.filename');
+    });
+
+    it('should allow a filename inside the verified session resource prefix', () => {
+      const result = applySessionConstraints(
+        'read_document',
+        { filename: 'project_alpha_report.txt' },
+        constraints
+      );
+
+      expect(result.anomaly).toBe(false);
+    });
+
+    it('should enforce the resource prefix for nested MCP arguments', () => {
+      const result = applySessionConstraints(
+        'read_document',
+        { request: { filename: 'employee_handbook.txt' } },
+        constraints
+      );
+
+      expect(result.anomaly).toBe(true);
+      expect(result.reason).toContain('arguments.request.filename');
+    });
+
+    it('should not constrain calls when the token has no resource restriction', () => {
+      const result = applySessionConstraints(
+        'read_document',
+        { filename: 'employee_handbook.txt' },
+        undefined
+      );
+
       expect(result.anomaly).toBe(false);
     });
   });

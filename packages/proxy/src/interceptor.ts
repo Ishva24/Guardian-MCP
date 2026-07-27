@@ -1,6 +1,6 @@
 import type { IncomingHttpHeaders } from 'http';
 import { verifyAndAuthorize } from './jwt/verifier.js';
-import { inspectArguments, applyArgumentConstraints } from './semantic/inspector.js';
+import { inspectArguments, applyArgumentConstraints, applySessionConstraints } from './semantic/inspector.js';
 import { evaluatePolicy, getPolicy } from './policy/engine.js';
 import { auditLogger } from './audit/logger.js';
 import type { JsonRpcRequest, InterceptDecision } from './types.js';
@@ -92,6 +92,31 @@ export async function interceptRequest(
   }
 
   // ── Step 3: Policy Rule Evaluation ───────────────────────────────────────
+  const sessionConstraintResult = applySessionConstraints(toolName, toolArgs, claims.constraints);
+
+  if (sessionConstraintResult.anomaly) {
+    const latencyMs = performance.now() - startTime;
+    auditLogger.log({
+      eventType: 'TOOL_CALL_DENIED',
+      severity: sessionConstraintResult.severity ?? 'HIGH',
+      sessionId: claims.sessionId,
+      userId: claims.sub,
+      role: claims.role,
+      tool: toolName,
+      arguments: sanitizeArgs(toolArgs),
+      blockReason: 'SESSION_CONSTRAINT',
+      blockDetail: sessionConstraintResult.reason,
+      proxyLatencyMs: latencyMs,
+    });
+    return {
+      blocked: true,
+      reason: sessionConstraintResult.reason,
+      type: 'SESSION_CONSTRAINT',
+      severity: sessionConstraintResult.severity,
+      claims,
+    };
+  }
+
   const policyDecision = evaluatePolicy(toolName, claims.scopes ?? []);
 
   if (!policyDecision.allowed) {

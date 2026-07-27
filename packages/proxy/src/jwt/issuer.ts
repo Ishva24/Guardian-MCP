@@ -52,7 +52,7 @@ export const SESSION_PROFILES = {
     role: 'manager',
     scopes: ['docs:read', 'docs:list', 'docs:delete'],
     sessionId: `sess_${randomUUID().slice(0, 8)}`,
-    constraints: { allowedResourcePrefix: 'project_alpha/' },
+    constraints: { allowedResourcePrefix: 'project_alpha_' },
   }),
 
   /** Unprivileged guest — list only */

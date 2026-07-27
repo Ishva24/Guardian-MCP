@@ -41,7 +41,7 @@ export interface AgentSessionClaims {
 export interface InterceptDecision {
   blocked: boolean;
   reason?: string;
-  type?: 'AUTH_FAILURE' | 'SCOPE_DENIED' | 'SEMANTIC_ANOMALY' | 'POLICY_DENY' | 'TOKEN_EXPIRED' | 'TOKEN_INVALID' | 'TOKEN_MISSING' | 'UNKNOWN_TOOL';
+  type?: 'AUTH_FAILURE' | 'SCOPE_DENIED' | 'SEMANTIC_ANOMALY' | 'SESSION_CONSTRAINT' | 'POLICY_DENY' | 'TOKEN_EXPIRED' | 'TOKEN_INVALID' | 'TOKEN_MISSING' | 'UNKNOWN_TOOL';
   severity?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   claims?: AgentSessionClaims;
 }
