@@ -3,6 +3,7 @@ import { verifyAndAuthorize } from './jwt/verifier.js';
 import { inspectArguments, applyArgumentConstraints, applySessionConstraints } from './semantic/inspector.js';
 import { evaluatePolicy, getPolicy } from './policy/engine.js';
 import { auditLogger } from './audit/logger.js';
+import { sanitizeAuditArguments } from './audit/sanitize.js';
 import type { JsonRpcRequest, InterceptDecision } from './types.js';
 
 /**
@@ -176,9 +177,5 @@ export async function interceptRequest(
 
 /** Remove sensitive argument values from audit logs */
 function sanitizeArgs(args: Record<string, unknown>): Record<string, unknown> {
-  const sanitized: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(args)) {
-    sanitized[k] = typeof v === 'string' && v.length > 100 ? `[${v.length} chars — truncated]` : v;
-  }
-  return sanitized;
+  return sanitizeAuditArguments(args);
 }
