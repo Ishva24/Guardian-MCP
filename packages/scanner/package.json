@@ -1,0 +1,17 @@
+{
+  "name": "@guardian-mcp/scanner",
+  "version": "1.0.0",
+  "description": "Automated security scanner for testing Model Context Protocol (MCP) servers against vulnerabilities",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "guardian-mcp-scan": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "scan": "node dist/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
